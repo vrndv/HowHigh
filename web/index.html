@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>How High? — Download</title>
+    <meta name="description" content="How High? An endless mountain. No finish line. How high can you get?">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+            background:
+                radial-gradient(circle at 50% 20%, #294c72 0%, transparent 45%),
+                linear-gradient(180deg, #0b1726 0%, #07101a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 560px;
+            text-align: center;
+        }
+
+        .mountain {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: clamp(48px, 12vw, 76px);
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -3px;
+            margin-bottom: 16px;
+        }
+
+        .tagline {
+            font-size: 20px;
+            font-weight: 600;
+            color: #aebfd0;
+            margin-bottom: 24px;
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #899bad;
+            max-width: 480px;
+            margin: 0 auto 34px;
+        }
+
+        .download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            padding: 16px 30px;
+            border-radius: 14px;
+
+            background: #fff;
+            color: #07101a;
+
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .download:active {
+            transform: translateY(0);
+        }
+
+        .android {
+            font-size: 20px;
+        }
+
+        .info {
+            margin-top: 22px;
+            font-size: 13px;
+            color: #627487;
+        }
+
+        .footer {
+            margin-top: 70px;
+            font-size: 12px;
+            color: #435364;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="mountain">🏔️</div>
+
+        <h1>How High?</h1>
+
+        <p class="tagline">
+            An endless mountain. No finish line.
+        </p>
+
+        <p class="description">
+            How high can you get? Climb your way up, collect boosts,
+            unlock new characters, and try to beat players from around
+            the world. The higher you go, the harder it gets.
+        </p>
+
+        <a
+            class="download"
+            href="YOUR_APK_URL_HERE"
+            download
+        >
+            <span class="android">▶</span>
+            Download for Android
+        </a>
+
+        <p class="info">
+            APK • Android
+        </p>
+
+        <p class="footer">
+            © 2026 How High?
+        </p>
+
+    </main>
+
+</body>
+</html>
