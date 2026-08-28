@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>How High? — Download</title>
     <meta name="description" content="How High? An endless mountain. No finish line. How high can you get?">
+    
+    <!-- Marked.js for parsing GitHub's markdown changelogs -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         * {
@@ -22,16 +24,17 @@
             background:
                 radial-gradient(circle at 50% 20%, #294c72 0%, transparent 45%),
                 linear-gradient(180deg, #0b1726 0%, #07101a 100%);
-            display: block;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 24px;
         }
 
         .container {
             width: 100%;
-            max-width: 560px;
+            max-width: 600px;
             text-align: center;
+            margin-top: 4vh;
         }
 
         .mountain {
@@ -62,33 +65,41 @@
             margin: 0 auto 34px;
         }
 
+        .download-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .download {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-
-            padding: 16px 30px;
+            padding: 16px 32px;
             border-radius: 14px;
-
             background: #fff;
             color: #07101a;
-
             font-size: 17px;
             font-weight: 700;
             text-decoration: none;
-
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         }
 
-        .download:hover {
+        .download:hover:not(.disabled) {
             transform: translateY(-3px);
             box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
         }
 
-        .download:active {
+        .download:active:not(.disabled) {
             transform: translateY(0);
+        }
+
+        .download.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .android {
@@ -96,15 +107,128 @@
         }
 
         .info {
-            margin-top: 22px;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #7e94aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: #d1deea;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* --- Dynamic Releases Section --- */
+        
+        .releases-section {
+            margin-top: 50px;
+            text-align: left;
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #aebfd0;
+            margin-bottom: 16px;
+            margin-top: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card h3 span.date {
+            font-size: 13px;
+            font-weight: 400;
+            color: #627487;
+        }
+
+        .markdown-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #b0c4d9;
+        }
+
+        .markdown-body ul, .markdown-body ol {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .markdown-body p { margin-bottom: 10px; }
+        .markdown-body a { color: #58a6ff; text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+
+        .older-release-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+        }
+
+        .older-release-info h4 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .older-release-info .meta-details {
             font-size: 13px;
             color: #627487;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-small {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .footer {
             margin-top: 70px;
             font-size: 12px;
             color: #435364;
+            text-align: center;
+            padding-bottom: 24px;
         }
     </style>
 </head>
@@ -127,18 +251,37 @@
             the world. The higher you go, the harder it gets.
         </p>
 
-        <a
-            class="download"
-            href="https://github.com/vrndv/HowHigh/releases/download/0.4.8/ball.apk"
-            download
-        >
-            <span class="android">▶</span>
-            Download for Android
-        </a>
+        <!-- Main Download Area -->
+        <div class="download-box">
+            <a id="main-download-btn" class="download disabled" href="#">
+                <span class="android">▶</span>
+                <span id="btn-text">Fetching latest...</span>
+            </a>
 
-        <p class="info">
-            APK • Android
-        </p>
+            <!-- Dynamic Specs (Architecture, Size, Version) -->
+            <p class="info" id="version-info">
+                Loading release details...
+            </p>
+        </div>
+
+        <!-- Dynamic Releases Container -->
+        <div id="releases-container" class="releases-section">
+            <h3 class="section-title">Latest Release Notes</h3>
+            <div class="card">
+                <h3>
+                    <span id="latest-version-title">Version ?</span>
+                    <span class="date" id="latest-date"></span>
+                </h3>
+                <div id="changelog-content" class="markdown-body">
+                    Loading changelog...
+                </div>
+            </div>
+
+            <div id="older-releases-wrapper" style="display: none;">
+                <h3 class="section-title">Older Releases</h3>
+                <div id="older-releases-list"></div>
+            </div>
+        </div>
 
         <p class="footer">
             © 2026 How High?
@@ -146,5 +289,128 @@
 
     </main>
 
+    <script>
+        const GITHUB_REPO = 'vrndv/HowHigh'; 
+
+        // Helper: Convert raw bytes into readable MB/KB
+        function formatBytes(bytes) {
+            if (!bytes || bytes === 0) return 'Unknown size';
+            const mb = bytes / (1024 * 1024);
+            return `${mb.toFixed(1)} MB`;
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Helper: Find APK asset from release
+        function getApkAsset(release) {
+            return release.assets ? release.assets.find(asset => asset.name.endsWith('.apk')) : null;
+        }
+
+        async function fetchReleases() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases`);
+                if (!response.ok) throw new Error('Failed to fetch releases');
+                
+                const releases = await response.json();
+                
+                if (releases.length === 0) {
+                    showError("No releases found.");
+                    return;
+                }
+
+                // 1. Render Latest Release
+                const latest = releases[0];
+                updateLatestReleaseUI(latest);
+
+                // 2. Render Older Releases
+                if (releases.length > 1) {
+                    renderOlderReleases(releases.slice(1));
+                }
+
+                document.getElementById('releases-container').style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                showError("Unable to load releases right now.");
+            }
+        }
+
+        function updateLatestReleaseUI(latest) {
+            const downloadBtn = document.getElementById('main-download-btn');
+            const btnText = document.getElementById('btn-text');
+            const versionInfo = document.getElementById('version-info');
+            const latestTitle = document.getElementById('latest-version-title');
+            const latestDate = document.getElementById('latest-date');
+            const changelogContent = document.getElementById('changelog-content');
+
+            const apkAsset = getApkAsset(latest);
+            const downloadUrl = apkAsset ? apkAsset.browser_download_url : latest.html_url;
+            const fileSize = apkAsset ? formatBytes(apkAsset.size) : '';
+
+            // Update Main Button
+            downloadBtn.href = downloadUrl;
+            downloadBtn.classList.remove('disabled');
+            btnText.innerText = "Download for Android";
+            
+            // Highlight Architecture (arm64-v8a / 64-bit) & Size
+            versionInfo.innerHTML = `
+                <span class="badge">ARM64 (64-bit)</span>
+                ${fileSize ? `<span>•</span> <span>${fileSize}</span>` : ''}
+                <span>•</span>
+                <span>Android</span>
+                <span>•</span>
+                <span>${latest.tag_name}</span>
+            `;
+
+            // Update Changelog Card
+            latestTitle.innerText = latest.name || latest.tag_name;
+            latestDate.innerText = formatDate(latest.published_at);
+            
+            changelogContent.innerHTML = latest.body 
+                ? marked.parse(latest.body) 
+                : '<em>No release notes provided.</em>';
+        }
+
+        function renderOlderReleases(olderReleases) {
+            const wrapper = document.getElementById('older-releases-wrapper');
+            const list = document.getElementById('older-releases-list');
+            wrapper.style.display = 'block';
+
+            let html = '';
+            
+            olderReleases.slice(0, 5).forEach(release => {
+                const apkAsset = getApkAsset(release);
+                const downloadUrl = apkAsset ? apkAsset.browser_download_url : release.html_url;
+                const fileSize = apkAsset ? formatBytes(apkAsset.size) : '';
+
+                html += `
+                    <div class="card older-release-card">
+                        <div class="older-release-info">
+                            <h4>${release.name || release.tag_name}</h4>
+                            <div class="meta-details">
+                                <span>${formatDate(release.published_at)}</span>
+                                <span>•</span>
+                                <span class="badge" style="font-size: 10px; padding: 1px 6px;">64-bit</span>
+                                ${fileSize ? `<span>•</span> <span>${fileSize}</span>` : ''}
+                            </div>
+                        </div>
+                        <a href="${downloadUrl}" class="btn-small">Download</a>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function showError(msg) {
+            document.getElementById('btn-text').innerText = "Download Unavailable";
+            document.getElementById('version-info').innerText = msg;
+        }
+
+        fetchReleases();
+    </script>
 </body>
 </html>
